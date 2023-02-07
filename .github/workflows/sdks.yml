@@ -25,7 +25,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: '3.9.5'
+        python-version: '3.11.1'
     - name: Install blacktop/ipsw                             # Blacktop's brew tap doesn't support Linux currently
       run: |
         git clone https://github.com/blacktop/ipsw
@@ -86,7 +86,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: 1.4.0
+          tag_name: 1.5.0
           release_name: iOS 15.5-16.3 SDKs
           draft: false
           prerelease: false
@@ -99,4 +99,4 @@ jobs:
           for sdk in sdks/*.zip; do
             sdks+=("-a" "$sdk")
           done
-          hub release edit "${sdks[@]}" -m "iOS 15.5-16.3 SDKs" "1.4.0"
+          hub release edit "${sdks[@]}" -m "iOS 15.5-16.3 SDKs" "1.5.0"
