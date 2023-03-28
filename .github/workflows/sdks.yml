@@ -12,11 +12,7 @@ jobs:
     strategy:
       matrix:
         version:
-          - "16.3"
-          - "16.2"
-          - "16.1"
-          - "16.0"
-          - "15.5"
+          - "16.4"
 
     runs-on: ubuntu-latest
 
@@ -87,7 +83,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: 1.5.0
-          release_name: iOS 15.5-16.3 SDKs
+          release_name: 16.4 SDK
           draft: false
           prerelease: false
       - name: Attach SDKs to release
@@ -99,4 +95,4 @@ jobs:
           for sdk in sdks/*.zip; do
             sdks+=("-a" "$sdk")
           done
-          hub release edit "${sdks[@]}" -m "iOS 15.5-16.3 SDKs" "1.5.0"
+          hub release edit "${sdks[@]}" -m "iOS 16.4 SDK" "1.5.0"
