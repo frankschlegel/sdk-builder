@@ -4,16 +4,16 @@
 name: SDKs
 
 on:
-  push:
-    branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'iOS Version'
+        required: true
+        default: '16.5.1'
+        type: string
 
 jobs:
   build:
-    strategy:
-      matrix:
-        version:
-          - "16.4"
-
     runs-on: ubuntu-latest
 
     steps:
@@ -46,16 +46,16 @@ jobs:
         git clone https://github.com/cxnder/ktool.git && cd ktool && chmod +x dev_install.sh && ./dev_install.sh
     - name: Build SDK
       run: |
-        python3 sdkgen.py ${{ matrix.version }}
+        python3 sdkgen.py ${{ inputs.version }}
     - name: Prep SDK for artifact upload
       run: |
-        mv ${{ matrix.version }}.extracted iPhoneOS${{ matrix.version }}.sdk
-        zip -9 -r iPhoneOS${{ matrix.version }}.sdk.zip iPhoneOS${{ matrix.version }}.sdk
+        mv ${{ inputs.version }}.extracted iOS${{ inputs.version }}.sdk
+        zip -9 -r iOS${{ inputs.version }}.sdk.zip iOS${{ inputs.version }}.sdk
     - name: Upload SDK artifact
       uses: actions/upload-artifact@v3
       with:
-        name: ${{ matrix.version }}-Container
-        path: iPhoneOS${{ matrix.version }}.sdk.zip
+        name: ${{ inputs.version }}-Container
+        path: iOS${{ inputs.version }}.sdk.zip
 
 
   upload:
@@ -83,7 +83,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: 1.5.0
-          release_name: 16.4 SDK
+          release_name: ${{ inputs.version }} SDK
           draft: false
           prerelease: false
       - name: Attach SDKs to release
@@ -95,4 +95,4 @@ jobs:
           for sdk in sdks/*.zip; do
             sdks+=("-a" "$sdk")
           done
-          hub release edit "${sdks[@]}" -m "iOS 16.4 SDK" "1.5.0"
+          hub release edit "${sdks[@]}" -m "iOS ${{ inputs.version }} SDK" "1.5.0"
